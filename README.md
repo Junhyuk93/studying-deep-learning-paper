@@ -12,3 +12,6 @@
 
 - Conditional Generative Adversarial Nets
     - [Orginal Paper](https://arxiv.org/pdf/1411.1784.pdf) / [Study]() / [Code](https://github.com/Junhyuk93/PyTorchImplementation/blob/main/CGAN/CGAN_Code.ipynb)
+
+- USB: Universal-Scale Object Detection Benchmark
+    - [Orginal Paper](https://arxiv.org/pdf/2103.14027.pdf)

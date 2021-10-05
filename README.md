@@ -8,3 +8,7 @@
 
 - Optimal Speed and Accuracy of Object Detection(YOLOv4)
     - [Original Paper](https://arxiv.org/pdf/2004.10934.pdf)
+
+
+- Conditional Generative Adversarial Nets
+    - [Orginal Paper](https://arxiv.org/pdf/1411.1784.pdf) / [Study]() /[Code]()

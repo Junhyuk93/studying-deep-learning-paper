@@ -15,3 +15,6 @@
 
 - USB: Universal-Scale Object Detection Benchmark
     - [Orginal Paper](https://arxiv.org/pdf/2103.14027.pdf)
+
+- Swin Transformer: Hierarchical Vision Transformer using Shifted Windows(Swin)
+    [Original Paper](https://arxiv.org/pdf/2103.14030)

@@ -12,3 +12,11 @@
 
 - Conditional Generative Adversarial Nets
     - [Orginal Paper](https://arxiv.org/pdf/1411.1784.pdf) / [Study]() / [Code](https://github.com/Junhyuk93/PyTorchImplementation/blob/main/CGAN/CGAN_Code.ipynb)
+
+- USB: Universal-Scale Object Detection Benchmark
+    - [Orginal Paper](https://arxiv.org/pdf/2103.14027.pdf)
+
+- Swin Transformer: Hierarchical Vision Transformer using Shifted Windows(Swin)
+    - [Original Paper](https://arxiv.org/pdf/2103.14030)
+- M2Det
+    - [Original Paper](https://arxiv.org/pdf/1811.04533.pdf)

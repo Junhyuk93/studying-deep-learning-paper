@@ -1,5 +1,8 @@
 # 딥러닝 논문 리뷰와 구현 : Deep learning Paper Review and Implement
 
+- SSD: Single Shot MultiBox Detector(SSD)
+    - [Original Paper](https://arxiv.org/pdf/1512.02325.pdf) / [Study]()
+    
 - You Only Look Once : Unified, Read-Time Object Detection(YOLO)
     - [Original Paper](https://arxiv.org/pdf/1506.02640.pdf) / [Study](https://github.com/Junhyuk93/PyTorchImplementation/blob/main/YOLO/Yolo%20.pdf) / [Code](https://github.com/Junhyuk93/PyTorchImplementation/tree/main/YOLO/Code)
 

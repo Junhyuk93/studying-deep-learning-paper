@@ -28,4 +28,4 @@
 - Swin Transformer: Hierarchical Vision Transformer using Shifted Windows(Swin)
     - [Original Paper](https://arxiv.org/pdf/2103.14030)
 - M2Det
-    - [Original Paper](https://arxiv.org/pdf/1811.04533.pdf)
+    - [Original Paper](https://arxiv.org/pdf/1811.04533.pdf)  

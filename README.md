@@ -30,5 +30,5 @@
 - M2Det
     - [Original Paper](https://arxiv.org/pdf/1811.04533.pdf)  
 
-- HRNet
+- HRNet: Deep High-Resolution Representation Learning for Visual Recognition
     - [Original Paper](https://arxiv.org/pdf/1908.07919.pdf)

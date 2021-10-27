@@ -29,3 +29,6 @@
     - [Original Paper](https://arxiv.org/pdf/2103.14030)
 - M2Det
     - [Original Paper](https://arxiv.org/pdf/1811.04533.pdf)  
+
+- HRNet
+    - [Original Paper](https://arxiv.org/pdf/1908.07919.pdf)

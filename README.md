@@ -31,4 +31,4 @@
     - [Original Paper](https://arxiv.org/pdf/1811.04533.pdf)  
 
 - HRNet: Deep High-Resolution Representation Learning for Visual Recognition
-    - [Original Paper](https://arxiv.org/pdf/1908.07919.pdf)
+    - [Original Paper](https://arxiv.org/pdf/1908.07919.pdf) / [Study](https://junhyuk93.github.io/segmentation,/hrnet/2021/10/25/Ai-BoostCamp-P_stage-HRNet/)

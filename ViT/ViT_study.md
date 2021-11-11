@@ -84,6 +84,7 @@ Context Vector를 decoder의 첫번째 시점 단어를 출력할때 활용하�
 
 ![](https://i.imgur.com/6kIdyZT.png)
 
+- **ViT의 단점 : 이미지의 2차원적 정보를 유지하지 못해 inductive bias를 학습하는 것이 어렵고 이에 따라 많은 양의 데이터를 필요로 함!!**
 
 ## VIT
 

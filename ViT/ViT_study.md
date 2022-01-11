@@ -36,7 +36,9 @@
 - Context vector: Decoder에게 전달되는 입력 문장의 정보
 - Context vector의 크기가 제한적이기 때문에 입력 문장의 모든 정보를 전하기 어려움!!
 
+
 ![](https://i.imgur.com/JpPqA6H.png)
+
 
 ## Seq2seq with Attention
 - Decoder가 특정 시점 단어를 출력할 때 encoder 정보 중 연관성이 있는 정보를 직접 선택!!

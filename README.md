@@ -35,3 +35,6 @@
 
 - AN IMAGE IS WORTH 16X16 WORDS: TRANSFORMERS FOR IMAGE RECOGNITION AT SCAL (ViT)
     - [Original Paper](https://arxiv.org/pdf/2010.11929.pdf) / [Study](https://github.com/Junhyuk93/studying-deep-learning-paper/blob/main/ViT/ViT_study.md)
+
+- YOLOX: Exceeding YOLO Series in 2021
+    - [Original Paper](https://arxiv.org/pdf/2107.08430.pdf) / [Study](https://github.com/Junhyuk93/studying-deep-learning-paper/blob/main/YOLOX/YOLOX_review.md)

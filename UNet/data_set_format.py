@@ -9,12 +9,12 @@ import matplotlib.pyplot as plt
 dir_data = './datasets'
 
 name_label = 'train-labels.tif'
-name_input = 'train_volume.tif'
+name_input = 'train-volume.tif'
 
-# img_label = Image.open(os.path.join(dir_data, name_label))
-img_label = Image.open('C:/Users/akzns/Desktop/폴더/ai/논문/PyTorchImplementation/UNet/datasets/train-labels.tif')
-# img_input = Image.open(os.path.join(dir_data, name_input))
-img_input = Image.open("C:/Users/akzns/Desktop/폴더/ai/논문/PyTorchImplementation/UNet/datasets/train-volume.tif")
+img_label = Image.open(os.path.join(dir_data, name_label))
+# img_label = Image.open('C:/Users/akzns/Desktop/폴더/ai/논문/PyTorchImplementation/UNet/datasets/train-labels.tif')
+img_input = Image.open(os.path.join(dir_data, name_input))
+# img_input = Image.open("C:/Users/akzns/Desktop/폴더/ai/논문/PyTorchImplementation/UNet/datasets/train-volume.tif")
 
 
 ny, nx = img_label.size

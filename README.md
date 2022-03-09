@@ -2,6 +2,10 @@
 
 ## GAN
 
+- Generative Adversarial Nets (GAN)
+- [Original Paper](https://arxiv.org/abs/1406.2661) / [Study](https://github.com/Junhyuk93/studying-deep-learning-paper/blob/main/GAN/Study.md) / [Code]()
+
+
 - Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks(DCGAN)
     - [Original Paper](https://arxiv.org/abs/1511.06434) / [Study]() / [Code](https://github.com/Junhyuk93/studying-deep-learning-paper/tree/main/DCGAN)
 

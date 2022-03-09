@@ -3,22 +3,22 @@
 ## GAN
 
 - Generative Adversarial Nets (GAN)
-- [Original Paper](https://arxiv.org/abs/1406.2661) / [Study](https://github.com/Junhyuk93/studying-deep-learning-paper/blob/main/GAN/Study.md) / [Code]()
+- [Original Paper](https://arxiv.org/abs/1406.2661) / [Study](https://github.com/Junhyuk93/studying-deep-learning-paper/blob/main/GAN/Study.md)
 
 
 - Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks(DCGAN)
-    - [Original Paper](https://arxiv.org/abs/1511.06434) / [Study]() / [Code](https://github.com/Junhyuk93/studying-deep-learning-paper/tree/main/DCGAN)
+    - [Original Paper](https://arxiv.org/abs/1511.06434) / [Code](https://github.com/Junhyuk93/studying-deep-learning-paper/tree/main/DCGAN)
 
 - Conditional Generative Adversarial Nets
-    - [Orginal Paper](https://arxiv.org/pdf/1411.1784.pdf) / [Study]() / [Code](https://github.com/Junhyuk93/PyTorchImplementation/blob/main/CGAN/CGAN_Code.ipynb)
+    - [Orginal Paper](https://arxiv.org/pdf/1411.1784.pdf) / [Code](https://github.com/Junhyuk93/PyTorchImplementation/blob/main/CGAN/CGAN_Code.ipynb)
 
 ## 공사중
 
 - SSD: Single Shot MultiBox Detector(SSD)
-    - [Original Paper](https://arxiv.org/pdf/1512.02325.pdf) / [Study]()
+    - [Original Paper](https://arxiv.org/pdf/1512.02325.pdf) 
 
 - U-Net: Convolutional Networks for Biomedical Image Segmentation
-    - [Original Paper](https://arxiv.org/pdf/1505.04597.pdf) / [Study]() / [Code](https://github.com/Junhyuk93/studying-deep-learning-paper/tree/main/UNet)
+    - [Original Paper](https://arxiv.org/pdf/1505.04597.pdf) / [Code](https://github.com/Junhyuk93/studying-deep-learning-paper/tree/main/UNet)
 
 - You Only Look Once : Unified, Read-Time Object Detection(YOLO)
     - [Original Paper](https://arxiv.org/pdf/1506.02640.pdf) / [Study](https://github.com/Junhyuk93/PyTorchImplementation/blob/main/YOLO/Yolo%20.pdf) / [Code](https://github.com/Junhyuk93/PyTorchImplementation/tree/main/YOLO/Code)

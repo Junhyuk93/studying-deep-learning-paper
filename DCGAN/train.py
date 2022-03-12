@@ -153,7 +153,7 @@ print("device: %s" % device)
 
 ## 디렉토리 생성하기
 result_dir_train = os.path.join(result_dir, 'train')
-result_dir_val = os.path.join(result_dir, 'val')
+
 result_dir_test = os.path.join(result_dir, 'test')
 
 if not os.path.exists(result_dir):
@@ -172,20 +172,14 @@ if mode == 'train':
     # transform_val = transforms.Compose([RandomCrop(shape=(ny, nx)), Normalization(mean=0.5, std=0.5)])
 
     transform_train = transforms.Compose([RandomCrop(shape=(ny, nx)), RandomFlip()])
-    transform_val = transforms.Compose([RandomCrop(shape=(ny, nx))])
 
     dataset_train = Dataset(data_dir=os.path.join(data_dir, 'train'), transform=transform_train, task=task, opts=opts)
     loader_train = DataLoader(dataset_train, batch_size=batch_size, shuffle=True, num_workers=8)
 
-    dataset_val = Dataset(data_dir=os.path.join(data_dir, 'val'), transform=transform_val, task=task, opts=opts)
-    loader_val = DataLoader(dataset_val, batch_size=batch_size, shuffle=True, num_workers=8)
-
     # 그밖에 부수적인 variables 설정하기
     num_data_train = len(dataset_train)
-    num_data_val = len(dataset_val)
-
     num_batch_train = np.ceil(num_data_train / batch_size)
-    num_batch_val = np.ceil(num_data_val / batch_size)
+
 else:
     # transform_test = transforms.Compose([Normalization(mean=0.5, std=0.5)])
 
@@ -200,21 +194,22 @@ else:
     num_batch_test = np.ceil(num_data_test / batch_size)
 
 ## 네트워크 생성하기
-if network == "unet":
-    net = UNet(in_channels=nch, out_channels=nch, nker=nker, learning_type=learning_type).to(device)
-elif network == "hourglass":
-    net = Hourglass(in_channels=nch, out_channels=nch, nker=nker, learning_type=learning_type).to(device)
-elif network == "resnet":
-    net = ResNet(in_channels=nch, out_channels=nch, nker=nker, learning_type=learning_type).to(device)
-elif network == "srresnet":
-    net = SRResNet(in_channels=nch, out_channels=nch, nker=nker, learning_type=learning_type).to(device)
+if network == 'DCGAN':
+    netG = DCGAN(in_channels=100, out_channels=nch, nker=nker).to(device)
+    netD = Discriminator(in_channels=nch, out_channels=1, nker=nker).to(device)
+
+    init_weights(netG, init_type='normal', init_gain=0.02)
+    init_weights(netD, init_type='normal', init_gain=0.02)
 
 ## 손실함수 정의하기
 # fn_loss = nn.BCEWithLogitsLoss().to(device)
-fn_loss = nn.MSELoss().to(device)
+# fn_loss = nn.MSELoss().to(device)
+fn_loss = nn.BCELoss().to(device)
+
 
 ## Optimizer 설정하기
-optim = torch.optim.Adam(net.parameters(), lr=lr)
+optimG = torch.optim.Adam(netG.parameters(), lr=lr, betas=(0.5, 0.999))
+optimD = torch.optim.Adam(netD.parameters(), lr=lr, betas=(0.5, 0.999))
 
 ## 그밖에 부수적인 functions 설정하기
 fn_tonumpy = lambda x: x.to('cpu').detach().numpy().transpose(0, 2, 3, 1)
@@ -233,32 +228,62 @@ st_epoch = 0
 # TRAIN MODE
 if mode == 'train':
     if train_continue == "on":
-        net, optim, st_epoch = load(ckpt_dir=ckpt_dir, net=net, optim=optim)
+        net, optim, st_epoch = load(ckpt_dir=ckpt_dir, netG=netG,
+                                    netD=netD, optimG=optimG, optimD=optimD)
 
     for epoch in range(st_epoch + 1, num_epoch + 1):
-        net.train()
-        loss_mse = []
+        netG.train()
+        netD.train()
+
+        loss_G_train = []
+        loss_D_real_train = []
+        loss_D_fake_train = []
+
 
         for batch, data in enumerate(loader_train, 1):
             # forward pass
             label = data['label'].to(device)
-            input = data['input'].to(device)
+            # input = data['input'].to(device)
+            input = torch.randn(label,shape[0], 100, 1, 1,).to(device)
 
-            output = net(input)
+            output = netG(input)
 
-            # backward pass
-            optim.zero_grad()
+            # backward netD
+            set_requires_grad(netD, True)
+            optimD.zero_grad()
 
-            loss = fn_loss(output, label)
-            loss.backward()
+            pred_real = netD(label)
+            pred_fake = netD(output.detach())
 
-            optim.step()
+
+            loss_D_real = fn_loss(pred_real, torch.ones_like(pred_real))
+            loss_D_fake = fn_loss(pred_fake, torch.zeros_like(pred_fake))
+            loss_D = 0.5 * (loss_D_real + loss_D_fake)
+            
+            loss_D.backward()
+            optimD.step()
+            
+            # backward netG
+            set_requires_grad(netD, False)
+            optimG.zero_grad()
+
+            pred_fake = netD(output)
+
+            loss_G = fn_loss(pred_fake, torch.ones_like(pred_fake))
+
+            loss_G.backward()
+            optimG.step()
 
             # 손실함수 계산
-            loss_mse += [loss.item()]
+            loss_G_train += [loss_G.item()]
+            loss_D_real_train += [loss_D_real.item()]
+            loss_D_fake_train += [loss_D_fake.item()]
+            
 
-            print("TRAIN: EPOCH %04d / %04d | BATCH %04d / %04d | LOSS %.4f" %
-                  (epoch, num_epoch, batch, num_batch_train, np.mean(loss_mse)))
+            print("TRAIN: EPOCH %04d / %04d | BATCH %04d / %04d |"
+                    " GEN %.4f | DISC REAL %.4f | DISC FAKE: %.4f" %
+                  (epoch, num_epoch, batch, num_batch_train,
+                   np.mean(loss_G_train), np.mean(loss_D_real_train), np.mean(loss_D_fake_train)))
 
             if batch % 20 == 0:
               # Tensorboard 저장하기
@@ -266,127 +291,37 @@ if mode == 'train':
               # input = fn_tonumpy(fn_denorm(input, mean=0.5, std=0.5))
               # output = fn_tonumpy(fn_denorm(output, mean=0.5, std=0.5))
 
-              label = fn_tonumpy(label)
-              input = fn_tonumpy(input)
-              output = fn_tonumpy(output)
-
-              label = np.clip(label, a_min=0, a_max=1)
-              input = np.clip(input, a_min=0, a_max=1)
+              output = fn_tonumpy(fn_denorm(output, mean=0.5, std=0.5)).squeeze()
               output = np.clip(output, a_min=0, a_max=1)
 
               id = num_batch_train * (epoch - 1) + batch
 
               plt.imsave(os.path.join(result_dir_train, 'png', '%04d_label.png' % id), label[0].squeeze(), cmap=cmap)
-              plt.imsave(os.path.join(result_dir_train, 'png', '%04d_input.png' % id), input[0].squeeze(), cmap=cmap)
-              plt.imsave(os.path.join(result_dir_train, 'png', '%04d_output.png' % id), output[0].squeeze(), cmap=cmap)
+              writer_train.add_image('output', output, id, dataformats='NHWC')
 
-              # writer_train.add_image('label', label, id, dataformats='NHWC')
-              # writer_train.add_image('input', input, id, dataformats='NHWC')
-              # writer_train.add_image('output', output, id, dataformats='NHWC')
+        writer_train.add_scalar('loss_G', np.mean(loss_G_train), epoch)
+        writer_train.add_scalar('loss_D_real', np.mean(loss_D_real_train), epoch)
+        writer_train.add_scalar('loss_D_fake', np.mean(loss_D_fake_train), epoch)
 
-        writer_train.add_scalar('loss', np.mean(loss_mse), epoch)
-
-        with torch.no_grad():
-            net.eval()
-            loss_mse = []
-
-            for batch, data in enumerate(loader_val, 1):
-                # forward pass
-                label = data['label'].to(device)
-                input = data['input'].to(device)
-
-                output = net(input)
-
-                # 손실함수 계산하기
-                loss = fn_loss(output, label)
-
-                loss_mse += [loss.item()]
-
-                print("VALID: EPOCH %04d / %04d | BATCH %04d / %04d | LOSS %.4f" %
-                      (epoch, num_epoch, batch, num_batch_val, np.mean(loss_mse)))
-
-                if batch % 10 == 0:
-                  # Tensorboard 저장하기
-                  # label = fn_tonumpy(fn_denorm(label, mean=0.5, std=0.5))
-                  # input = fn_tonumpy(fn_denorm(input, mean=0.5, std=0.5))
-                  # output = fn_tonumpy(fn_denorm(output, mean=0.5, std=0.5))
-
-                  label = fn_tonumpy(label)
-                  input = fn_tonumpy(input)
-                  output = fn_tonumpy(output)
-
-                  label = np.clip(label, a_min=0, a_max=1)
-                  input = np.clip(input, a_min=0, a_max=1)
-                  output = np.clip(output, a_min=0, a_max=1)
-
-                  id = num_batch_val * (epoch - 1) + batch
-
-                  plt.imsave(os.path.join(result_dir_val, 'png', '%04d_label.png' % id), label[0].squeeze(), cmap=cmap)
-                  plt.imsave(os.path.join(result_dir_val, 'png', '%04d_input.png' % id), input[0].squeeze(), cmap=cmap)
-                  plt.imsave(os.path.join(result_dir_val, 'png', '%04d_output.png' % id), output[0].squeeze(), cmap=cmap)
-
-                  # writer_val.add_image('label', label, id, dataformats='NHWC')
-                  # writer_val.add_image('input', input, id, dataformats='NHWC')
-                  # writer_val.add_image('output', output, id, dataformats='NHWC')
-
-        writer_val.add_scalar('loss', np.mean(loss_mse), epoch)
-
-        if epoch % 50 == 0:
-            save(ckpt_dir=ckpt_dir, net=net, optim=optim, epoch=epoch)
+        if epoch % 2 == 0:
+            save(ckpt_dir=ckpt_dir, netG=netG, netD=netD, optimG=optimG, optimD=optimD, epoch=epoch)
 
     writer_train.close()
-    writer_val.close()
 
 # TEST MODE
 else:
-    net, optim, st_epoch = load(ckpt_dir=ckpt_dir, net=net, optim=optim)
+    netG, netD, optimD, optimG, st_epoch = load(ckpt_dir=ckpt_dir, netG=netG, netD=netD, optimG=optimG, optimD=optimD)
 
     with torch.no_grad():
-        net.eval()
+        netG.eval()
         loss_mse = []
 
-        for batch, data in enumerate(loader_test, 1):
-            # forward pass
-            label = data['label'].to(device)
-            input = data['input'].to(device)
+        input = torch.randn(batch_size, 100, 1, 1).to(device)
 
-            output = net(input)
+        output = netG(input)
 
-            # 손실함수 계산하기
-            loss = fn_loss(output, label)
-
-            loss_mse += [loss.item()]
-
-            print("TEST: BATCH %04d / %04d | LOSS %.4f" %
-                  (batch, num_batch_test, np.mean(loss_mse)))
-
-            # Tensorboard 저장하기
-            # label = fn_tonumpy(fn_denorm(label, mean=0.5, std=0.5))
-            # input = fn_tonumpy(fn_denorm(input, mean=0.5, std=0.5))
-            # output = fn_tonumpy(fn_denorm(output, mean=0.5, std=0.5))
-
-            label = fn_tonumpy(label)
-            input = fn_tonumpy(input)
-            output = fn_tonumpy(output)
-
-            for j in range(label.shape[0]):
-                id = batch_size * (batch - 1) + j
-
-                label_ = label[j]
-                input_ = input[j]
-                output_ = output[j]
-
-                np.save(os.path.join(result_dir_test, 'numpy', '%04d_label.npy' % id), label_)
-                np.save(os.path.join(result_dir_test, 'numpy', '%04d_input.npy' % id), input_)
-                np.save(os.path.join(result_dir_test, 'numpy', '%04d_output.npy' % id), output_)
-
-                label_ = np.clip(label_, a_min=0, a_max=1)
-                input_ = np.clip(input_, a_min=0, a_max=1)
-                output_ = np.clip(output_, a_min=0, a_max=1)
-
-                plt.imsave(os.path.join(result_dir_test, 'png', '%04d_label.png' % id), label_, cmap=cmap)
-                plt.imsave(os.path.join(result_dir_test, 'png', '%04d_input.png' % id), input_, cmap=cmap)
-                plt.imsave(os.path.join(result_dir_test, 'png', '%04d_output.png' % id), output_, cmap=cmap)
-
-    print("AVERAGE TEST: BATCH %04d / %04d | LOSS %.4f" %
-          (batch, num_batch_test, np.mean(loss_mse)))
+        for j in range(output.shape[0]):
+            id = j
+            output_ = output[j]
+            output_ = np.clip(output_, a_min=0, a_max=1)
+            plt.imsave(os.path.join(result_dir_test, 'png', '%04d_output.png' % id), output_, cmap=cmap)

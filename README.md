@@ -12,6 +12,9 @@
 - Conditional Generative Adversarial Nets
     - [Orginal Paper](https://arxiv.org/pdf/1411.1784.pdf) / [Code](https://github.com/Junhyuk93/PyTorchImplementation/blob/main/CGAN/CGAN_Code.ipynb)
 
+- InfoGAN:  Interpretable Representation Learning by Information Maximizing Generative Adversarial Nets
+    - [Original Paper](https://arxiv.org/pdf/1606.03657.pdf) / [Study](https://controllable-ai.tistory.com/50)
+
 ## 공사중
 
 - SSD: Single Shot MultiBox Detector(SSD)
